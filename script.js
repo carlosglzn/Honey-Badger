@@ -53,11 +53,11 @@ class Player {
         const dy = this.y - mouse.y;    // Distance in the vertical y-axis
 
         if (mouse.x != this.x) {
-            this.x -= dx / 50;
+            this.x -= dx / 30;
         }                           // If there's no equality, update this.positions(x, y)
 
         if (mouse.y != this.y) {
-            this.y -= dy / 50;  // divided so we can change movement speed
+            this.y -= dy / 30;  // divided so we can change movement speed
         }
     
     }
@@ -93,10 +93,14 @@ class Honey {
         this.radius = 50; // All hone have the same size
         this.speed = Math.random() * 5 + 1; // Random between 1 and 6
         this.distance;
+        this.counted = false;
     }
 
     update() {
         this.y -= this.speed; // Here the honey moves from the bottom of the canvas to the top
+        const dx = this.x - player.x;   
+        const dy = this.y - player.y;                   // Calculate distance between player and honey
+        this.distance = Math.sqrt(dx * dx + dy * dy);
     }
 
     draw() {
@@ -124,6 +128,15 @@ function handleHoney() {
             honeyArray.splice(i, 1); // remove the honey from the array. In other loop to solve the blinking for now
 
         }
+
+        if (honeyArray[i].distance < honeyArray[i].radius + player.radius) {
+           
+            if (!honeyArray[i].counted) {
+                score ++;
+                honeyArray[i].counted = true;   // If there's a collition, add 1 to the counter, and eliminate the honey in the array.
+                honeyArray.splice(i, 1);    
+            }
+        }
     }
 
 }
@@ -139,9 +152,11 @@ function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height) // To clear the entire canvas from old paint between every animation frame
     handleHoney()
     player.update(); // Calculate player position
-    player.draw(); // Draw the line and te circle
+    player.draw(); // Draw the line and the circle
+    ctx.fillStyle = 'black';
+    ctx.fillText('score: ' + score, 10, 50); // Print the score in canvas
     gameFrame ++;  // Frame counter
-    requestAnimationFrame(animate); // Animation loop, recursion when function calls itself over and over in line 90
+    requestAnimationFrame(animate); // Animation loop, recursion when function calls itself over and over
     
 };
 
