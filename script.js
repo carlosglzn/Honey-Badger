@@ -12,7 +12,6 @@ ctx.font = '50px Georgia'
 // MOUSE INTERACTIVITY
 
 let canvasPosition = canvas.getBoundingClientRect(); // Measure current size and position of canvas element
-console.log(canvasPosition)
 
 const mouse = {
     x: canvas.width / 2,  // To initiate in the center of the canvas
@@ -85,6 +84,52 @@ const player = new Player();  // Create a new player object
 
 // HONEY
 
+const honeyArray = []
+
+class Honey {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = canvas.height + 100; // All the honey starts at the bottom of the canvas
+        this.radius = 50; // All hone have the same size
+        this.speed = Math.random() * 5 + 1; // Random between 1 and 6
+        this.distance;
+    }
+
+    update() {
+        this.y -= this.speed; // Here the honey moves from the bottom of the canvas to the top
+    }
+
+    draw() {
+        ctx.fillStyle = 'blue';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.closePath();
+        ctx.stroke();
+    }
+}
+
+function handleHoney() {
+    if (gameFrame % 50 === 0) {  // Run this code every 50 frames
+        honeyArray.push(new Honey());
+    }
+
+    for (let i = 0; i < honeyArray.length; i++) { // Loop in honey array
+        honeyArray[i].update(); // Draw and update the position of the honey
+        honeyArray[i].draw();
+    }
+
+    for (let i = 0; i < honeyArray.length; i++) {
+        if (honeyArray[i].y < 0 - honeyArray[i].radius * 2) { // If the honey leaves the canvas... 
+            honeyArray.splice(i, 1); // remove the honey from the array. In other loop to solve the blinking for now
+
+        }
+    }
+
+}
+
+
+
 // SNAKES
 
 // ANIMATION LOOP
@@ -92,8 +137,10 @@ const player = new Player();  // Create a new player object
 function animate() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height) // To clear the entire canvas from old paint between every animation frame
+    handleHoney()
     player.update(); // Calculate player position
     player.draw(); // Draw the line and te circle
+    gameFrame ++;  // Frame counter
     requestAnimationFrame(animate); // Animation loop, recursion when function calls itself over and over in line 90
     
 };
