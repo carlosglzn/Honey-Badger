@@ -7,7 +7,8 @@ canvas.height = 500;
 
 let score = 0;
 let gameFrame = 0;
-ctx.font = '50px Georgia'
+let gameOver = false;
+ctx.font = '40px Georgia'
 
 // MOUSE INTERACTIVITY
 
@@ -62,7 +63,7 @@ class Player {
     
     }
 
-    draw() { 
+    draw() {  // Draw Player
 
         if (mouse.click) {
             ctx.lineWidth = 0.2; // Draw a line so we can see the direction of movement of the player
@@ -96,15 +97,15 @@ class Honey {
         this.counted = false;
     }
 
-    update() {
+    update() {  // Behavior Honey
         this.y -= this.speed; // Here the honey moves from the bottom of the canvas to the top
         const dx = this.x - player.x;   
         const dy = this.y - player.y;                   // Calculate distance between player and honey
-        this.distance = Math.sqrt(dx * dx + dy * dy);
+        this.distance = Math.sqrt(dx * dx + dy * dy); // Pythagorean Theorem: a^2 + b^2 = c
     }
 
     draw() {
-        ctx.fillStyle = 'blue';
+        ctx.fillStyle = 'blue';  // Draw Honey
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fill();
@@ -118,25 +119,24 @@ function handleHoney() {
         honeyArray.push(new Honey());
     }
 
-    for (let i = 0; i < honeyArray.length; i++) { // Loop in honey array
+    for (let i = 0; i < honeyArray.length; i++) {  // Loop in honey array
+
         honeyArray[i].update(); // Draw and update the position of the honey
         honeyArray[i].draw();
-    }
-
-    for (let i = 0; i < honeyArray.length; i++) {
+        
         if (honeyArray[i].y < 0 - honeyArray[i].radius * 2) { // If the honey leaves the canvas... 
             honeyArray.splice(i, 1); // remove the honey from the array. In other loop to solve the blinking for now
-
-        }
-
-        if (honeyArray[i].distance < honeyArray[i].radius + player.radius) {
+            i --;
+        } else if (honeyArray[i].distance < honeyArray[i].radius + player.radius) {
            
-            if (!honeyArray[i].counted) {
+          if (!honeyArray[i].counted) {
                 score ++;
-                honeyArray[i].counted = true;   // If there's a collition, add 1 to the counter, and eliminate the honey in the array.
-                honeyArray.splice(i, 1);    
+                honeyArray[i].counted = true;   // If there's a collision, add 1 to the counter, and eliminate the honey in the array.
+                honeyArray.splice(i, 1);  
+                i --;  
             }
         }
+        
     }
 
 }
@@ -145,20 +145,91 @@ function handleHoney() {
 
 // SNAKES
 
-// ANIMATION LOOP
+class Enemy {
+    constructor() {
+        this.x = canvas.width + 200;   // Starting point
+        this.y = Math.random() * canvas.height;  // Random from the right of the canvas
+        this.radius = 60;
+        this.speed = Math.random() * 2 + 2; // Random between 2 and 4
+        this.frame = 0
+        this.frameX = 0; // Later review for animation
+        this.frameY = 0; // Later review for animation
+        this.spriteWidth = 418; // Later review for animation
+        this.spriteHeight = 397; // Later review for animation
+
+    }
+
+    draw() {                        // Draw enemy
+        ctx.fillStyle = 'green';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); // Draw the enemy
+        ctx.fill();
+
+        
+    }
+
+    update() {                  // Behavior of the enemy
+        this.x -= this.speed
+        if (this.x < 0 - this.radius * 2) { // If the enemy leaves the canvas screen to the left...
+            this.x = canvas.width + 200;
+            this.y = Math.random() * canvas.height;  // Change position random
+            this.speed = Math.random() * 2 + 2;
+        }
+
+        const dx = this.x - player.x;
+        const dy = this.y - player.y;
+        const distance = Math.sqrt(dx * dx + dy * dy); // Pythagorean Theorem: a^2 + b^2 = c
+
+        if (distance < this.radius + player.radius) {
+            handleGameOver();                           // If collision, game over!
+        }
+    }
+}
+
+const enemy1 = new Enemy(); // Create enemy
+const enemy2 = new Enemy()
+
+
+function handleEnemy() {
+    
+    enemy1.draw();
+    enemy2.draw();
+    enemy1.update();
+    enemy2.update();
+    
+}
+
+function handleGameOver() {         // Game Over Function
+    ctx.fillStyle = 'black';
+    ctx.fillText('GAME OVER! Your score was: ' + score, 110, 250);
+    gameOver = true;
+
+}
+
+
+// ANIMATION LOOP / Motor
 
 function animate() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height) // To clear the entire canvas from old paint between every animation frame
-    handleHoney()
+    handleHoney()    // Call Honey
     player.update(); // Calculate player position
     player.draw(); // Draw the line and the circle
+    handleEnemy() // Call enemy
     ctx.fillStyle = 'black';
     ctx.fillText('score: ' + score, 10, 50); // Print the score in canvas
     gameFrame ++;  // Frame counter
-    requestAnimationFrame(animate); // Animation loop, recursion when function calls itself over and over
+    if (!gameOver) {
+        requestAnimationFrame(animate); // Animation loop, recursion when function calls itself over and over
+    }
     
 };
 
+
 animate(); // Invoke the function
 
+
+
+window.addEventListener('rezise', function(){
+    canvasPosition = canvas.getBoundingClientRect();  // Register mouse position when we rezise the window.
+})
