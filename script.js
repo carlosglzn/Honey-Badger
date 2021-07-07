@@ -8,6 +8,7 @@ canvas.height = 500;
 let score = 0;
 let gameFrame = 0;
 let gameOver = false;
+let youWon = false;
 ctx.font = '40px Georgia'
 
 // MOUSE INTERACTIVITY
@@ -135,12 +136,12 @@ function handleHoney() {
                 honeyArray.splice(i, 1);  
                 i --;  
             }
+            
         }
         
     }
 
 }
-
 
 
 // SNAKES
@@ -206,6 +207,13 @@ function handleGameOver() {         // Game Over Function
 
 }
 
+function handleYouWon() {
+    if (score === 50) {
+        ctx.fillStyle = 'black';
+        ctx.fillText('Congratulations! You won.', 150, 250);    // Win condition
+        youWon = true;
+    }
+}
 
 // ANIMATION LOOP / Motor
 
@@ -219,9 +227,10 @@ function animate() {
     ctx.fillStyle = 'black';
     ctx.fillText('score: ' + score, 10, 50); // Print the score in canvas
     gameFrame ++;  // Frame counter
-    if (!gameOver) {
+    if (!gameOver && !youWon) {
         requestAnimationFrame(animate); // Animation loop, recursion when function calls itself over and over
     }
+    handleYouWon()
     
 };
 
