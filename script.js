@@ -37,6 +37,12 @@ canvas.addEventListener('mouseup', function(){
 
 // PLAYER
 
+const playerLeft = new Image();
+playerLeft.src = 'images/badger_spritesheet.png';
+const playerRight = new Image();
+playerRight.src = 'images/badger_right.png';
+
+
 class Player {
     constructor() {
         this.x = canvas.width / 2; // Initial coordinates in the center of the canvas when the player stars moving
@@ -53,6 +59,9 @@ class Player {
     update() {  // To update player position to move the player towards the mouse -> compare current position with mouse position
         const dx = this.x  - mouse.x;   // Distance in the horizontal x-axis
         const dy = this.y - mouse.y;    // Distance in the vertical y-axis
+
+        let theta = Math.atan2(dy, dx);
+        this.angle = theta;                 // Rotate Player in the position of the click
 
         if (mouse.x != this.x) {
             this.x -= dx / 30;
@@ -79,6 +88,21 @@ class Player {
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); // Create a circle
         ctx.fill();
         ctx.closePath();
+
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle);
+
+        if (this.x >= mouse.x) {
+
+            ctx.drawImage(playerLeft, this.frameX * this.spriteWidth, this.frameY + this.spriteHeight, this.spriteWidth, this.spriteHeight, 0 - 75, 0 - 65, this.spriteWidth/3.7, this.spriteHeight/3.7);
+        
+        } else {
+
+            ctx.drawImage(playerRight, this.frameX * this.spriteWidth, this.frameY + this.spriteHeight, this.spriteWidth, this.spriteHeight, 0 - 75, 0 - 65, this.spriteWidth/3.7, this.spriteHeight/3.7);
+
+        }
+        ctx.restore();
     }
 }
 
