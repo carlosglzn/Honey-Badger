@@ -46,8 +46,8 @@ class Player {
         this.frameX = 0;
         this.frameY = 0; // Coordinates sprite sheet of the badger animation; Later review
         this.frame = 0; // Later review for animation
-        this.spriteWidth = 498;  // Later review for animation
-        this.spriteHeight = 327; // Later review for animation
+        this.spriteWidth = 641;  
+        this.spriteHeight = 466; 
     }
 
     update() {  // To update player position to move the player towards the mouse -> compare current position with mouse position
@@ -96,6 +96,7 @@ class Honey {
         this.speed = Math.random() * 5 + 1; // Random between 1 and 6
         this.distance;
         this.counted = false;
+        this.sound = 'crunch1'
     }
 
     update() {  // Behavior Honey
@@ -115,6 +116,9 @@ class Honey {
     }
 }
 
+const crunch = document.createElement('audio');
+crunch.src = 'sounds/crunch.1.ogg';
+
 function handleHoney() {
     if (gameFrame % 50 === 0) {  // Run this code every 50 frames
         honeyArray.push(new Honey());
@@ -129,6 +133,8 @@ function handleHoney() {
             honeyArray.splice(i, 1); // remove the honey from the array. In other loop to solve the blinking for now
             i --;
         } else if (honeyArray[i].distance < honeyArray[i].radius + player.radius) {
+
+            crunch.play();
            
           if (!honeyArray[i].counted) {
                 score ++;
@@ -230,7 +236,7 @@ function animate() {
     if (!gameOver && !youWon) {
         requestAnimationFrame(animate); // Animation loop, recursion when function calls itself over and over
     }
-    handleYouWon()
+    handleYouWon() // Call win condition
     
 };
 
