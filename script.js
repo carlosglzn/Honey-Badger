@@ -268,7 +268,7 @@ function handleEnemy() {
 }
 
 function handleGameOver() {         // Game Over Function
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = 'red';
     ctx.fillText('GAME OVER! Your score was: ' + score, 110, 250);
     gameOver = true;
 
@@ -276,7 +276,7 @@ function handleGameOver() {         // Game Over Function
 
 function handleYouWon() {
     if (score === 50) {
-        ctx.fillStyle = 'black';
+        ctx.fillStyle = 'green';
         ctx.fillText('Congratulations! You won.', 150, 250);    // Win condition
         youWon = true;
     }
