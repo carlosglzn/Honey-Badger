@@ -87,7 +87,7 @@ class Player {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); // Create a circle
         ctx.fill();
-        ctx.closePath();
+        ctx.closePath(); 
 
         ctx.save();
         ctx.translate(this.x, this.y);
@@ -95,11 +95,11 @@ class Player {
 
         if (this.x >= mouse.x) {
 
-            ctx.drawImage(playerLeft, this.frameX * this.spriteWidth, this.frameY + this.spriteHeight, this.spriteWidth, this.spriteHeight, 0 - 75, 0 - 65, this.spriteWidth/3.7, this.spriteHeight/3.7);
+            ctx.drawImage(playerLeft, this.frameX * this.spriteWidth, this.frameY + this.spriteHeight, this.spriteWidth, this.spriteHeight, 0 - 85, 0 - 65, this.spriteWidth/3.5, this.spriteHeight/3.7);
         
         } else {
 
-            ctx.drawImage(playerRight, this.frameX * this.spriteWidth, this.frameY + this.spriteHeight, this.spriteWidth, this.spriteHeight, 0 - 75, 0 - 65, this.spriteWidth/3.7, this.spriteHeight/3.7);
+            ctx.drawImage(playerRight, this.frameX * this.spriteWidth, this.frameY + this.spriteHeight, this.spriteWidth, this.spriteHeight, 0 - 85, 0 - 65, this.spriteWidth/3.5, this.spriteHeight/3.7);
 
         }
         ctx.restore();
@@ -110,7 +110,10 @@ const player = new Player();  // Create a new player object
 
 // HONEY
 
-const honeyArray = []
+const honeyArray = [];
+
+const honeyImage = new Image();
+honeyImage.src = 'images/honey.png';
 
 class Honey {
     constructor() {
@@ -131,12 +134,13 @@ class Honey {
     }
 
     draw() {
-        ctx.fillStyle = 'blue';  // Draw Honey
+        /* ctx.fillStyle = 'blue';  // Draw Honey
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fill();
         ctx.closePath();
-        ctx.stroke();
+        ctx.stroke(); */
+        ctx.drawImage(honeyImage, this.x - 72, this.y - 60, this.radius * 2.8, this.radius * 2.8);
     }
 }
 
@@ -245,11 +249,21 @@ function handleYouWon() {
     }
 }
 
+// Background
+
+const background = new Image();      // Get image of the background
+background.src = 'images/sand.jpg';
+
+function handleBackground() {
+    ctx.drawImage(background, 0, 0 , canvas.width, canvas.height);  // position of the background
+}
+
 // ANIMATION LOOP / Motor
 
 function animate() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height) // To clear the entire canvas from old paint between every animation frame
+    handleBackground();
     handleHoney()    // Call Honey
     player.update(); // Calculate player position
     player.draw(); // Draw the line and the circle
