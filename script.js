@@ -77,7 +77,7 @@ class Player {
             if (this.frame === 2 || this.frame === 5 || this.frame === 8) {
                 this.frameX = 0;
             } else {
-                this.frameX ++;
+                this.frameX ++;               // Iterate in the spritesheet
             }
             if (this.frame < 3) this.frameY = 0;
             else if (this.frame < 5) this.frameY = 1;
@@ -236,7 +236,7 @@ class Enemy {
             if (this.frame === 3 || this.frame === 7 || this.frame === 11) {
                 this.frameX = 0;
             } else {
-                this.frameX ++;
+                this.frameX ++;                                 // Iterate in the spritesheet
             }
             if (this.frame < 3) this.frameY = 0;
             else if (this.frame < 7) this.frameY = 1;
