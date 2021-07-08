@@ -70,6 +70,20 @@ class Player {
         if (mouse.y != this.y) {
             this.y -= dy / 30;  // divided so we can change movement speed
         }
+
+        if (gameFrame % 5 === 0) {
+            this.frame ++;
+            if (this.frame >= 9) this.frame = 0;
+            if (this.frame === 2 || this.frame === 5 || this.frame === 8) {
+                this.frameX = 0;
+            } else {
+                this.frameX ++;
+            }
+            if (this.frame < 3) this.frameY = 0;
+            else if (this.frame < 5) this.frameY = 1;
+            else if (this.frame < 8) this.frameY = 2;
+            else (this.frame = 0);
+        }
     
     }
 
@@ -83,11 +97,11 @@ class Player {
             ctx.stroke() // Will connect the two points
         }
 
-        ctx.fillStyle = 'red'; // Circle red
+        /* ctx.fillStyle = 'red'; // Circle red
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); // Create a circle
         ctx.fill();
-        ctx.closePath(); 
+        ctx.closePath(); */
 
         ctx.save();
         ctx.translate(this.x, this.y);
@@ -180,25 +194,30 @@ function handleHoney() {
 
 // SNAKES
 
+const snake = new Image();
+snake.src = 'images/snake.png';
+
 class Enemy {
     constructor() {
         this.x = canvas.width + 200;   // Starting point
         this.y = Math.random() * canvas.height;  // Random from the right of the canvas
         this.radius = 60;
         this.speed = Math.random() * 2 + 2; // Random between 2 and 4
-        this.frame = 0
-        this.frameX = 0; // Later review for animation
-        this.frameY = 0; // Later review for animation
-        this.spriteWidth = 418; // Later review for animation
-        this.spriteHeight = 397; // Later review for animation
+        this.frame = 0;
+        this.frameX = 0; 
+        this.frameY = 0; 
+        this.spriteWidth = 1082; 
+        this.spriteHeight = 621; 
 
     }
 
     draw() {                        // Draw enemy
-        ctx.fillStyle = 'green';
+       /* ctx.fillStyle = 'green';
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); // Draw the enemy
-        ctx.fill();
+        ctx.fill(); */
+
+        ctx.drawImage(snake, this.frameX * this.spriteWidth, this.frameY * this.spriteHeight, this.spriteWidth, this.spriteHeight, this.x - 90, this.y - 90, this.radius * 2.5, this.radius * 2.5);
 
         
     }
@@ -209,6 +228,20 @@ class Enemy {
             this.x = canvas.width + 200;
             this.y = Math.random() * canvas.height;  // Change position random
             this.speed = Math.random() * 2 + 2;
+        }
+
+        if (gameFrame % 5 === 0) {
+            this.frame ++;
+            if (this.frame >= 12) this.frame = 0;
+            if (this.frame === 3 || this.frame === 7 || this.frame === 11) {
+                this.frameX = 0;
+            } else {
+                this.frameX ++;
+            }
+            if (this.frame < 3) this.frameY = 0;
+            else if (this.frame < 7) this.frameY = 1;
+            else if (this.frame < 11) this.frameY = 2;
+            else (this.frame = 0);
         }
 
         const dx = this.x - player.x;
@@ -222,7 +255,7 @@ class Enemy {
 }
 
 const enemy1 = new Enemy(); // Create enemy
-const enemy2 = new Enemy()
+const enemy2 = new Enemy();
 
 
 function handleEnemy() {
