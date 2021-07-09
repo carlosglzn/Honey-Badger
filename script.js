@@ -197,6 +197,10 @@ function handleHoney() {
 const snake = new Image();
 snake.src = 'images/snake.png';
 
+
+const gameOverSound = document.createElement('audio');
+gameOverSound.src = 'sounds/KL Peach Game Over 1.mp3';
+
 class Enemy {
     constructor() {
         this.x = canvas.width + 200;   // Starting point
@@ -249,7 +253,9 @@ class Enemy {
         const distance = Math.sqrt(dx * dx + dy * dy); // Pythagorean Theorem: a^2 + b^2 = c
 
         if (distance < this.radius + player.radius) {
-            handleGameOver();                           // If collision, game over!
+            gameOverSound.play();
+            handleGameOver(); 
+                                     // If collision, game over!
         }
     }
 }
@@ -270,15 +276,21 @@ function handleEnemy() {
 function handleGameOver() {         // Game Over Function
     ctx.fillStyle = 'red';
     ctx.fillText('GAME OVER! Your score was: ' + score, 110, 250);
+    gameMusic.pause();
     gameOver = true;
 
 }
 
+const winSound = document.createElement('audio');
+winSound.src = 'sounds/round_end.wav';
+
 function handleYouWon() {
-    if (score === 50) {
+    if (score === 30) {
         ctx.fillStyle = 'green';
         ctx.fillText('Congratulations! You won.', 150, 250);    // Win condition
         youWon = true;
+        winSound.play();
+        gameMusic.pause();
     }
 }
 
@@ -293,10 +305,15 @@ function handleBackground() {
 
 // ANIMATION LOOP / Motor
 
+
+const gameMusic = document.createElement('audio');
+gameMusic.src = 'sounds/seashore.mp3';
+
 function animate() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height) // To clear the entire canvas from old paint between every animation frame
     handleBackground();
+    gameMusic.play();
     handleHoney()    // Call Honey
     player.update(); // Calculate player position
     player.draw(); // Draw the line and the circle
